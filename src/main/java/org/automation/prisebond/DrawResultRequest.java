@@ -1,12 +1,17 @@
 package org.automation.prisebond;
 
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
@@ -16,6 +21,8 @@ import java.io.IOException;
  * GET : https://www.bb.org.bd/investfacility/prizebond/searchPbond.php?txtNumbers=0437535
  */
 public class DrawResultRequest {
+    private static Document doc;
+    private static String no;
     public static String BASE_URL="www.bb.org.bd";
     public static String PATH="/investfacility/prizebond/searchPbond.php";
     public static String USER_AGENT_CHROME="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36";
@@ -28,7 +35,30 @@ public class DrawResultRequest {
         get.addHeader(HttpHeaders.ACCEPT,ACCEPT);
         get.addHeader(HttpHeaders.ACCEPT_ENCODING,ACCEPT_ENCODING);
         CloseableHttpResponse response = client.execute(get);
-        return EntityUtils.toString(response.getEntity());
+        no=prise_bond_no;
+        return process(response.getEntity());
+    }
+    private static String process(HttpEntity entity) throws IOException {
+        doc =  Jsoup.parse(EntityUtils.toString(entity));
+        Element message = doc.select(".asteriskRed").first();
+        return processResults(message.wholeText());
+    }
+    private static String processResults(final String status){
+        if(status.contains("No match")){
+            return status;
+        }
+        else {
+            Element table= doc.select("table").first();
+            Elements rows = table.select("tr");
+            String result = "";
+            for (int i = 1; i < rows.size(); i++) {
+                Element row = rows.get(i);
+                Elements cols = row.select("td");
+                result = "!!!Congratulation!!!, "+no+" NO has won "+cols.get(2).text()+" of BDT "+cols.get(3).text();
+            }
+
+            return result;
+        }
     }
 
 }

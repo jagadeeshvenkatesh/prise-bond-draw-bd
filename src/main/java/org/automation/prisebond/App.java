@@ -13,7 +13,7 @@ public class App {
     public static void main(String[] args) throws IOException, URISyntaxException {
         List<String> ids = BondNoReader.read();
         for(String id : ids){
-            System.out.println(id+" : >>> : "+ResultRequest.check(id));
+            System.out.println(id+" : >>> : "+DrawResultRequest.check(id));
         }
     }
 }
