@@ -6,7 +6,7 @@ Bangladesh Bank Prise Bond Lottery Draw checking automation
 
 ### Steps to use : 
 - You need to have any IDE (packaging with maven plugins is coming) 
-- insert in your prisebond number in this file ```/src/main/resources/```
+- insert in your prisebond number in this file ```/src/main/resources/my-bonds.csv``` in given format. (only numbers)
 - Goto [APP](https://github.com/sarkershantonu/prise-bond-draw-bd/blob/main/src/main/java/org/automation/prisebond/App.java)
 - Run This APP main class 
 - You should see which prise bond number won the price and which is not in command line (result storing in file is coming)
